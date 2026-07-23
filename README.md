@@ -4,10 +4,10 @@ A simple, minimalist, aesthetic weekly todo planner — inspired by the design a
 
 ## Layout
 
-A **6 × 3 grid**:
+A **6 × 4 grid**:
 
 - **Rows 1–2 (the week)** — Monday through Friday each get a tall column spanning both rows. **Saturday** sits in the sixth column's top row and **Sunday** in its bottom row, so the weekend shares the week's height but each day is half as tall.
-- **Row 3 (Someday)** — a full-width band, as tall as the week rows, split into **three separate columns** (no per-column titles) for undated tasks.
+- **Rows 3–4 (Someday)** — a full-width band as tall as the week block above it, split into **three separate columns** (no per-column titles) for undated tasks.
 
 Today's column is highlighted in indigo.
 

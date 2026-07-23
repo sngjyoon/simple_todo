@@ -74,15 +74,15 @@ body {
 }
 .round-btn:hover { opacity: .82; }
 
-/* ---------- Grid: 6 columns x 3 rows ----------
+/* ---------- Grid: 6 columns x 4 rows ----------
    Rows 1-2: the week (Mon-Fri span both rows; Sat=row1, Sun=row2 in col 6)
-   Row 3   : Someday, full width, split into 3 columns                     */
+   Rows 3-4: Someday, full width, split into 3 columns                     */
 .grid {
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: 1fr 1fr minmax(200px, 1fr);
+  grid-template-rows: repeat(4, minmax(150px, 1fr));
   column-gap: 34px;
   row-gap: 22px;
 }
@@ -145,10 +145,10 @@ body {
   );
 }
 
-/* ---------- Someday: row 3, full width, 3 separated columns ---------- */
+/* ---------- Someday: rows 3-4, full width, 3 separated columns ---------- */
 .someday {
   grid-column: 1 / -1;
-  grid-row: 3;
+  grid-row: 3 / 5;
   display: flex;
   flex-direction: column;
   min-height: 0;
