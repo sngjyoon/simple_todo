@@ -7,9 +7,19 @@
   const DOW = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
   // ---- state ----
-  // tasks keyed by dateKey "YYYY-MM-DD"; someday under key "someday"
+  // tasks keyed by dateKey "YYYY-MM-DD"; someday split across someday1/2/3
   let store = load();
+  migrate();
   let weekStart = mondayOf(new Date()); // Date of Monday for the visible week
+
+  // move tasks from the old single "someday" list into the first someday column
+  function migrate() {
+    if (Array.isArray(store.someday)) {
+      store.someday1 = (store.someday1 || []).concat(store.someday);
+      delete store.someday;
+      save();
+    }
+  }
 
   function load() {
     try {
@@ -48,6 +58,9 @@
   // ---- rendering ----
   const grid = document.getElementById("grid");
 
+  const WD_CLASS = ["wd1", "wd2", "wd3", "wd4", "wd5", "sat", "sun"];
+  const SOMEDAY_KEYS = ["someday1", "someday2", "someday3"];
+
   function render() {
     // month title reflects the visible week (use month of Thursday to feel natural)
     const mid = addDays(weekStart, 3);
@@ -55,26 +68,18 @@
 
     grid.innerHTML = "";
 
-    // columns 1-5 : Mon..Fri
-    for (let i = 0; i < 5; i++) {
-      const col = document.createElement("div");
-      col.className = "col";
-      col.appendChild(buildDay(addDays(weekStart, i), i, true));
-      grid.appendChild(col);
+    // Mon-Fri span rows 1-2 (cols 1-5); Sat=col6/row1, Sun=col6/row2
+    for (let i = 0; i < 7; i++) {
+      const day = buildDay(addDays(weekStart, i), i);
+      day.classList.add(WD_CLASS[i]);
+      grid.appendChild(day);
     }
 
-    // column 6 : Sat + Sun stacked
-    const wk = document.createElement("div");
-    wk.className = "col weekend";
-    wk.appendChild(buildDay(addDays(weekStart, 5), 5, true));
-    wk.appendChild(buildDay(addDays(weekStart, 6), 6, true));
-    grid.appendChild(wk);
-
-    // row 2 : Someday spanning full width
+    // Row 3: Someday, full width, split into 3 columns
     grid.appendChild(buildSomeday());
   }
 
-  function buildDay(date, dowIdx, withFillers) {
+  function buildDay(date, dowIdx) {
     const key = keyOf(date);
     const wrap = document.createElement("div");
     wrap.className = "day" + (key === todayKey ? " is-today" : "");
@@ -85,39 +90,48 @@
       `<span class="date">${date.getDate()} ${MONTHS[date.getMonth()].slice(0,3)}</span>` +
       `<span class="dow">${DOW[dowIdx]}</span>`;
     wrap.appendChild(head);
-
-    wrap.appendChild(buildTaskList(key, false));
-    wrap.appendChild(buildAddRow(key));
-
-    if (withFillers) {
-      const count = getList(key).length;
-      const fills = Math.max(0, (dowIdx >= 5 ? 3 : 6) - count);
-      for (let i = 0; i < fills; i++) {
-        const f = document.createElement("div");
-        f.className = "filler";
-        wrap.appendChild(f);
-      }
-    }
+    wrap.appendChild(buildBody(key));
     return wrap;
   }
 
   function buildSomeday() {
     const col = document.createElement("div");
-    col.className = "col someday";
+    col.className = "someday";
 
-    const day = document.createElement("div");
-    day.className = "day";
     const head = document.createElement("div");
-    head.className = "day-head";
+    head.className = "day-head someday-head";
     head.innerHTML = `<span class="date">Someday</span>`;
-    day.appendChild(head);
-    day.appendChild(buildTaskList("someday", true));
-    day.appendChild(buildAddRow("someday"));
-    col.appendChild(day);
+    col.appendChild(head);
+
+    const cols = document.createElement("div");
+    cols.className = "someday-cols";
+    SOMEDAY_KEYS.forEach(key => {
+      const c = document.createElement("div");
+      c.className = "someday-col";
+      c.appendChild(buildTaskList(key));
+      c.appendChild(buildAddRow(key));
+      const fill = document.createElement("div");
+      fill.className = "fill";
+      c.appendChild(fill);
+      cols.appendChild(c);
+    });
+    col.appendChild(cols);
     return col;
   }
 
-  function buildTaskList(key, isSomeday) {
+  // scrollable body: task list + add row + ruled-line filler
+  function buildBody(key) {
+    const body = document.createElement("div");
+    body.className = "day-body";
+    body.appendChild(buildTaskList(key));
+    body.appendChild(buildAddRow(key));
+    const fill = document.createElement("div");
+    fill.className = "fill";
+    body.appendChild(fill);
+    return body;
+  }
+
+  function buildTaskList(key) {
     const ul = document.createElement("ul");
     ul.className = "tasks";
     ul.dataset.key = key;
