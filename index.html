@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Todo — Weekly Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1 id="month-title">Month Year</h1>
+    <div class="nav">
+      <button id="today-btn" class="pill-btn" title="Jump to this week">Today</button>
+      <button id="prev-btn" class="round-btn" aria-label="Previous week">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button id="next-btn" class="round-btn" aria-label="Next week">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="grid" id="grid"><!-- columns injected by JS --></main>
+
+  <!-- Color picker popover (hidden by default) -->
+  <div id="color-pop" class="color-pop" hidden>
+    <button class="swatch" data-color="none" title="No color"></button>
+    <button class="swatch" data-color="yellow" style="background:#fef08a" title="Yellow"></button>
+    <button class="swatch" data-color="green" style="background:#86efac" title="Green"></button>
+    <button class="swatch" data-color="blue" style="background:#a5b4fc" title="Blue"></button>
+    <button class="swatch" data-color="pink" style="background:#f9a8d4" title="Pink"></button>
+    <button class="swatch" data-color="orange" style="background:#fdba74" title="Orange"></button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
